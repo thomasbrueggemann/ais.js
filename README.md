@@ -12,6 +12,8 @@ var ais = require("ais");
 
 // pass the MMSI as first parameter
 ais.get(211704920, function(pos) {
-	console.log(pos);	// prints either a lat/long array coordinate: [ 56.574691666667, 9.0530616666667 ] or null
+
+	console.log(pos);	// prints either a lat/long array 
+						// coordinate: [56.57469, 9.05306] or null
 });
 ```

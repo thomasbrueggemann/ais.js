@@ -45,7 +45,6 @@ describe("ais.js", function() {
 	it("should download and extract the lat/lon for a mmsi number", function(done) {
 
 		ais.get(211704920, function(pos) {
-			console.log(pos);
 			return done();
 		});
 	});
