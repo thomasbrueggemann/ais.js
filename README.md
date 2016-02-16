@@ -14,6 +14,6 @@ var ais = require("ais");
 ais.get(211704920, function(pos) {
 
 	console.log(pos);	// prints either a lat/long array 
-						// coordinate: [56.57469, 9.05306] or null
+						// [56.57469, 9.05306] or null
 });
 ```
