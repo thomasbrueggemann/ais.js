@@ -1,8 +1,0 @@
-{
-  "apps" : [{
-    "name"       : "auto-kill",
-    "script"     : "./examples/killfast.js",
-    "min_uptime" : "100s",
-    "exec_mode"  : "fork_mode"
-  }]
-}
