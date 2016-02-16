@@ -1,7 +1,7 @@
 {
-	"name": "ais.js",
-	"description": "Recursive PM2 json app config file merger",
-	"version": "1.0.0",
+	"name": "ais",
+	"description": "Tries to gather the latest AIS position of a MMSI number",
+	"version": "1.0.1",
 	"private": false,
 	"author": "Thomas Brüggemann",
 	"dependencies": {
@@ -9,8 +9,7 @@
 	},
 	"devDependencies": {
 		"mocha": "*",
-		"should": ">= 0.0.1",
-		"glob": "*"
+		"should": ">= 0.0.1"
 	},
 	"scripts": {
 		"test": "node_modules/.bin/mocha"
