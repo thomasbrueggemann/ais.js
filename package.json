@@ -1,7 +1,7 @@
 {
 	"name": "ais",
 	"description": "Tries to gather the latest AIS position of a MMSI number",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"private": false,
 	"author": "Thomas Brüggemann",
 	"dependencies": {
@@ -11,6 +11,7 @@
 		"mocha": "*",
 		"should": ">= 0.0.1"
 	},
+	"main": "ais",
 	"scripts": {
 		"test": "node_modules/.bin/mocha"
 	},
