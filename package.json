@@ -1,10 +1,11 @@
 {
 	"name": "ais",
 	"description": "Tries to gather the latest AIS position of a MMSI number",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"private": false,
 	"author": "Thomas Brüggemann",
 	"dependencies": {
+		"cheerio": "^0.20.0",
 		"request": "2.69.0"
 	},
 	"devDependencies": {

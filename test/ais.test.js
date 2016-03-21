@@ -45,6 +45,16 @@ describe("ais.js", function() {
 	it("should download and extract the lat/lon for a mmsi number", function(done) {
 
 		ais.get(211704920, function(pos) {
+
+			pos.length.should.equal(2);
+			return done();
+		});
+	});
+
+	it("should download and extract course, speed and name of vessel", function(done) {
+
+		ais.get(211704920, function(pos, more) {
+			more.name.should.equal("TUULI");
 			return done();
 		});
 	});

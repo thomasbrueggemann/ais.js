@@ -1,4 +1,5 @@
 var request = require("request");
+var cheerio = require("cheerio");
 
 module.exports = {
 
@@ -59,10 +60,17 @@ module.exports = {
 
 			if (status !== 200) return callback(null);
 
+			// try to extract course, speed and name of vessel
+			$ = cheerio.load(body);
+
 			return callback([
 				module.exports.extract("latitude", body),
 				module.exports.extract("longitude", body)
-			]);
+			], {
+				"course": parseInt($("#vessel_course").text()) || null,
+				"speed": parseFloat($("#vessel_speed").text()) || null,
+				"name": $("#vessel_name").text().trim() || null
+			});
 		});
 	}
 };

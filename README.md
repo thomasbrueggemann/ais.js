@@ -1,4 +1,4 @@
-# ais.js [![Build Status](https://travis-ci.org/thomasbrueggemann/ais.js.svg?branch=master)](https://travis-ci.org/thomasbrueggemann/ais.js) [![npm](https://img.shields.io/badge/npm-1.0.2-blue.svg)](https://www.npmjs.com/package/ais)
+# ais.js [![Build Status](https://travis-ci.org/thomasbrueggemann/ais.js.svg?branch=master)](https://travis-ci.org/thomasbrueggemann/ais.js) [![npm](https://img.shields.io/badge/npm-1.1.0-blue.svg)](https://www.npmjs.com/package/ais)
 Tries to gather the latest AIS position of a MMSI number
 
 ## Installation
@@ -11,9 +11,13 @@ Tries to gather the latest AIS position of a MMSI number
 var ais = require("ais");
 
 // pass the MMSI as first parameter
-ais.get(211704920, function(pos) {
+ais.get(211704920, function(pos, more) {
 
 	console.log(pos);	// prints either a lat/long array 
 						// [56.57469, 9.05306] or null
+
+	console.log(more);  // prints more information about the vessel
+						// {course: 360, speed: 0.5, name: "TUULI"}
+						// speed in knots, course in degrees
 });
 ```
