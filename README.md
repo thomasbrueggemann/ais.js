@@ -1,4 +1,4 @@
-# ais.js [![Build Status](https://travis-ci.org/thomasbrueggemann/ais.js.svg?branch=master)](https://travis-ci.org/thomasbrueggemann/ais.js) [![npm](https://img.shields.io/badge/npm-1.1.0-blue.svg)](https://www.npmjs.com/package/ais)
+# ais.js [![Build Status](https://travis-ci.org/thomasbrueggemann/ais.js.svg?branch=master)](https://travis-ci.org/thomasbrueggemann/ais.js) [![npm](https://img.shields.io/badge/npm-1.2.0-blue.svg)](https://www.npmjs.com/package/ais)
 Tries to gather the latest AIS position of a MMSI number
 
 ## Installation

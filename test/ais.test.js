@@ -53,8 +53,10 @@ describe("ais.js", function() {
 
 	it("should download and extract course, speed and name of vessel", function(done) {
 
-		ais.get(211704920, function(pos, more) {
-			more.name.should.equal("TUULI");
+		ais.get(265758190, function(pos, more) {
+			console.log(more);
+			more.name.should.equal("RAN");
+			(more.time > 0).should.equal(true);
 			return done();
 		});
 	});

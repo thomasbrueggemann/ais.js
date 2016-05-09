@@ -69,7 +69,8 @@ module.exports = {
 			], {
 				"course": parseInt($("#vessel_course").text()) || null,
 				"speed": parseFloat($("#vessel_speed").text()) || null,
-				"name": $("#vessel_name").text().trim() || null
+				"name": $("#vessel_name").text().trim() || null,
+				"time": parseInt($("#last_report").data("ts"))
 			});
 		});
 	}
