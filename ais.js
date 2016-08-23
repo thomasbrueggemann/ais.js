@@ -23,7 +23,7 @@ module.exports = {
 				return callback(response.statusCode, body);
 			}
 
-			return callback(response.statusCode, null);
+			return callback(response.statusCode || 500, null);
 		});
 	},
 
