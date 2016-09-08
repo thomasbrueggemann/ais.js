@@ -17,13 +17,13 @@ module.exports = {
 		request(options, function(error, response, body) {
 
 			// check the response code
-			if (!error && response.statusCode == 200) {
+			if (!error && response && response.statusCode == 200) {
 
 				// all is clear!
 				return callback(response.statusCode, body);
 			}
 
-			return callback(response.statusCode || 500, null);
+			return callback(500, null);
 		});
 	},
 
