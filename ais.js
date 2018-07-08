@@ -114,9 +114,17 @@ module.exports = {
 	 * @param  {Object} $   The cheerio handle
 	 */
 	extractTime: function($) {
-		const txt = module.exports.findSiblingText($, "span", "Position Received:", "span");
-		const unix = moment.utc(txt.replace(" UTC", ""), "YYYY-MM-DD HH:mm").unix();
-		return unix;
+		let txt = module.exports.findSiblingText($, "span", "Position Received:", "span");
+		if (!txt) txt = module.exports.findSiblingText($, "span", "Position Received:", "strong");
+
+		if (txt.indexOf("ago") >= 0) {
+			txt = txt
+				.split("ago")[1]
+				.replace("(", "")
+				.replace(")", "");
+		}
+
+		return moment.utc(txt.replace(" UTC", "").trim(), "YYYY-MM-DD HH:mm").unix();
 	},
 
 	/**

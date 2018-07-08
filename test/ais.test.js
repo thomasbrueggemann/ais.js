@@ -26,4 +26,12 @@ describe("ais.js", function() {
 			return done();
 		});
 	});
+
+	it("should download and extract course, speed, time and name of vessel", function(done) {
+		ais.get(219021049, function(pos, more) {
+			more.name.should.equal("IDEFIX");
+			(more.time > 0).should.equal(true);
+			return done();
+		});
+	});
 });
