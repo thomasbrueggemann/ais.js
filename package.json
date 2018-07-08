@@ -1,11 +1,12 @@
 {
 	"name": "ais",
 	"description": "Tries to gather the latest AIS position of a MMSI number",
-	"version": "1.2.3",
+	"version": "2.0.0",
 	"private": false,
 	"author": "Thomas Brüggemann",
 	"dependencies": {
 		"cheerio": "^0.20.0",
+		"moment": "^2.22.2",
 		"request": "2.69.0"
 	},
 	"devDependencies": {
@@ -35,5 +36,11 @@
 	"bugs": {
 		"url": "https://github.com/thomasbrueggemann/ais.js/issues"
 	},
-	"homepage": "https://github.com/thomasbrueggemann/ais.js"
+	"homepage": "https://github.com/thomasbrueggemann/ais.js",
+	"prettier": {
+		"printWidth": 100,
+		"useTabs": true,
+		"tabWidth": 4,
+		"arrowParens": "always"
+	}
 }

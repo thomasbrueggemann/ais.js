@@ -1,24 +1,25 @@
-var request = require("request");
-var cheerio = require("cheerio");
+const request = require("request");
+const cheerio = require("cheerio");
+const moment = require("moment");
 
 module.exports = {
-
-	// DOWNLOAD
+	/**
+	 * Downloads the source code of a website
+	 * @param  {String}  mmsi  The ships MMSI id
+	 */
 	download: function(mmsi, callback) {
-
-		var options = {
-			"url": "https://www.vesselfinder.com/?mmsi=" + mmsi,
-			"headers": {
-				"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36"
+		const options = {
+			url: `https://www.marinetraffic.com/en/ais/details/ships/mmsi:${mmsi}`,
+			headers: {
+				"User-Agent":
+					"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36"
 			}
 		};
 
 		// trigger the request
 		request(options, function(error, response, body) {
-
 			// check the response code
-			if (!error && response && response.statusCode == 200) {
-
+			if (!error && body && response.statusCode == 200) {
 				// all is clear!
 				return callback(response.statusCode, body);
 			}
@@ -27,50 +28,123 @@ module.exports = {
 		});
 	},
 
-	// EXTRACT LATITUDE
-	extract: function(what, body) {
+	/**
+	 * Returns the text content of the sibling element of an HTML tag that
+	 * contains a certain text
+	 * @param  {Object} $ 		   The cheerio handle
+	 * @param  {String} tag        The HTML-tag to search for
+	 * @param  {String} key        The text content the tag should contain
+	 * @param  {String} siblingTag The HTML-tag of the sibling to read the text
+	 *                             from
+	 * @return {Object}            The found sibling or null
+	 */
+	findSibling: function($, tag, key, siblingTag) {
+		const keyElement = $(tag + ":contains(" + key + ")")
+			.filter((i, el) => {
+				// filter exact matches for siblings
+				return (
+					cheerio(el)
+						.text()
+						.trim() == key
+				);
+			})
+			.first();
 
-		// find start position
-		var pos = body.indexOf(what + ":");
+		// no element found?
+		if (!keyElement || keyElement.get().length === 0) return null;
 
-		// slice from start position
-		body = body.slice(pos);
-		body = body.split(",");
+		const sibling = keyElement.next(siblingTag);
 
-		if (body.length > 0) {
+		// only return the sibling, if the array has elements
+		if (!sibling || sibling.get().length === 0) return null;
 
-			// try to parse to float
-			var val = parseFloat(body[0].replace(what + ":", ""));
-
-			if (val && typeof val === "number") {
-
-				// success
-				return val;
-			}
-		}
-
-		return null
+		return sibling.first();
 	},
 
-	// GET
-	get: function(mmsi, callback) {
+	/**
+	 * Returns the text content of the sibling element of an HTML tag that
+	 * contains a certain text
+	 * @param  {Object} $ 		   The cheerio handle
+	 * @param  {String} tag        The HTML-tag to search for
+	 * @param  {String} key        The text content the tag should contain
+	 * @param  {String} siblingTag The HTML-tag of the sibling to read the text
+	 *                             from
+	 * @return {String}            The text content of the sibling
+	 */
+	findSiblingText: function($, tag, key, siblingTag) {
+		// find the next sibling that matches the criteria
+		const sibling = this.findSibling($, tag, key, siblingTag);
 
+		// no signling found?
+		if (!sibling || sibling.text().length === 0) return null;
+
+		return sibling.text().trim();
+	},
+
+	/**
+	 * Extract speed and course
+	 * @param  {Object} $   The cheerio handle
+	 */
+	extractSpeedCourse: function($) {
+		const txt = module.exports.findSiblingText($, "span", "Speed/Course:", "span");
+		const spdcrs = txt.split("/");
+
+		return {
+			spd: parseFloat(spdcrs[0]) || null,
+			crs: parseFloat(spdcrs[1]) || null
+		};
+	},
+
+	/**
+	 * Extract latitude and longitude coordinates
+	 * @param  {Object} $   The cheerio handle
+	 */
+	extractLatLon: function($) {
+		const txt = module.exports.findSiblingText($, "span", "Latitude / Longitude:", "span");
+		const latlon = txt.split("/");
+
+		return {
+			lat: parseFloat(latlon[0]),
+			lon: parseFloat(latlon[1])
+		};
+	},
+
+	/**
+	 * Extract time information
+	 * @param  {Object} $   The cheerio handle
+	 */
+	extractTime: function($) {
+		const txt = module.exports.findSiblingText($, "span", "Position Received:", "span");
+		const unix = moment.utc(txt.replace(" UTC", ""), "YYYY-MM-DD HH:mm").unix();
+		return unix;
+	},
+
+	/**
+	 * Returns a position update data structure for a given MMSI ship id
+	 * @param  {String}  	mmsi  		The MMSI ship id
+	 * @param  {Function} 	callback	A callback resolving with the latest ships information
+	 */
+	get: function(mmsi, callback) {
 		// download source code
 		module.exports.download(mmsi, function(status, body) {
-
 			if (status !== 200) return callback(null);
 
 			// try to extract course, speed and name of vessel
-			$ = cheerio.load(body);
+			const $ = cheerio.load(body);
 
-			return callback([
-				module.exports.extract("latitude", body),
-				module.exports.extract("longitude", body)
-			], {
-				"course": parseInt($("#vessel_course").text()) || null,
-				"speed": parseFloat($("#vessel_speed").text()) || null,
-				"name": $("#vessel_name").text().trim() || null,
-				"time": parseInt($("#last_report").data("ts"))
+			// extract information
+			const position = module.exports.extractLatLon($);
+			const speed_course = module.exports.extractSpeedCourse($);
+			const time = module.exports.extractTime($);
+
+			return callback([position.lat, position.lon], {
+				course: speed_course.crs,
+				speed: speed_course.spd,
+				name:
+					$("h1")
+						.text()
+						.trim() || null,
+				time: time
 			});
 		});
 	}
